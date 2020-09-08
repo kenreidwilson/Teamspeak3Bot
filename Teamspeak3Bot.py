@@ -1,5 +1,4 @@
-import asyncio, aiohttp, datetime, discord, json, os, time, sys
-from pprint import pprint
+import asyncio, aiohttp, discord, time, sys
 from discord.ext import commands
 from discord.ext.commands import Bot
 
