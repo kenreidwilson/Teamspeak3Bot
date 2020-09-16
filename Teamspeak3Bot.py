@@ -1,9 +1,13 @@
-import asyncio, aiohttp, discord, time, sys
-from discord.ext import commands
+import datetime
+import asyncio
+import aiohttp
+import time
+import sys
 from discord.ext.commands import Bot
+from discord.errors import LoginFailure
 
 CHANNEL_ID = 750768366116929676
-bot = commands.Bot(command_prefix='!')
+bot = Bot(command_prefix='!')
 
 def main():
 	while True:
@@ -15,7 +19,7 @@ def main():
 		except IndexError:
 			print("You must enter a bot token.")
 			sys.exit(1)
-		except discord.errors.LoginFailure:
+		except LoginFailure:
 			print("Discord login failed: Invalid bot token.")
 			sys.exit(1)
 		except KeyboardInterrupt:
@@ -26,12 +30,13 @@ def main():
 @bot.event
 async def on_voice_state_update(member, before, after):
 	if before.channel != after.channel:
+		timestamp = datetime.datetime.now().strftime("%H:%M:%S")
 		if before.channel == None:
-			await bot.get_channel(CHANNEL_ID).send(f'{member} connected to {after.channel}')
+			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** connected to channel **"{after.channel}"**')
 		elif after.channel != None:
-			await bot.get_channel(CHANNEL_ID).send(f'{member} switched to {after.channel}')
+			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** left heading to channel **"{after.channel}"**')
 		else:	
-			await bot.get_channel(CHANNEL_ID).send(f'{member} disconnected from {before.channel}')
+			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** disconnected (leaving)')
 
 @bot.event
 async def on_ready():
