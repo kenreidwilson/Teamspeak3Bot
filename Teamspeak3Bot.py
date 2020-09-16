@@ -1,3 +1,4 @@
+import datetime
 import asyncio
 import aiohttp
 import time
@@ -29,12 +30,13 @@ def main():
 @bot.event
 async def on_voice_state_update(member, before, after):
 	if before.channel != after.channel:
+		timestamp = datetime.datetime.now().strftime("%H:%M:%S")
 		if before.channel == None:
-			await bot.get_channel(CHANNEL_ID).send(f'{member} connected to {after.channel}')
+			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** connected to channel **"{after.channel}"**')
 		elif after.channel != None:
-			await bot.get_channel(CHANNEL_ID).send(f'{member} switched to {after.channel}')
+			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** left heading to channel **"{after.channel}"**')
 		else:	
-			await bot.get_channel(CHANNEL_ID).send(f'{member} disconnected from {before.channel}')
+			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** disconnected (leaving)')
 
 @bot.event
 async def on_ready():
