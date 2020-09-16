@@ -1,9 +1,12 @@
-import asyncio, aiohttp, discord, time, sys
-from discord.ext import commands
+import asyncio
+import aiohttp
+import time
+import sys
 from discord.ext.commands import Bot
+from discord.errors import LoginFailure
 
 CHANNEL_ID = 750768366116929676
-bot = commands.Bot(command_prefix='!')
+bot = Bot(command_prefix='!')
 
 def main():
 	while True:
@@ -15,7 +18,7 @@ def main():
 		except IndexError:
 			print("You must enter a bot token.")
 			sys.exit(1)
-		except discord.errors.LoginFailure:
+		except LoginFailure:
 			print("Discord login failed: Invalid bot token.")
 			sys.exit(1)
 		except KeyboardInterrupt:
