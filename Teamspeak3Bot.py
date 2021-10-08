@@ -5,9 +5,15 @@ import time
 import sys
 from discord.ext.commands import Bot
 from discord.errors import LoginFailure
+import discord
 
-CHANNEL_ID = 750768366116929676
-bot = Bot(command_prefix='!')
+LOGGING_CHANNEL_ID = 755189726126014474
+DEFAULT_ROLE_ID = 896143538830598224
+
+intents = discord.Intents.default()
+intents.members = True
+
+bot = Bot(command_prefix='!', intents=intents)
 
 def main():
 	while True:
@@ -32,11 +38,16 @@ async def on_voice_state_update(member, before, after):
 	if before.channel != after.channel:
 		timestamp = datetime.datetime.now().strftime("%H:%M:%S")
 		if before.channel == None:
-			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** connected to channel **"{after.channel}"**')
+			await bot.get_channel(LOGGING_CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** connected to channel **"{after.channel}"**')
 		elif after.channel != None:
-			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** left heading to channel **"{after.channel}"**')
+			await bot.get_channel(LOGGING_CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** left heading to channel **"{after.channel}"**')
 		else:	
-			await bot.get_channel(CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** disconnected (leaving)')
+			await bot.get_channel(LOGGING_CHANNEL_ID).send(f':information_source: <{timestamp}> **"{member}"** disconnected (leaving)')
+
+@bot.event
+async def on_member_join(member):
+	role = discord.utils.get(member.guild.roles, id=DEFAULT_ROLE_ID)
+	await member.add_roles(role)
 
 @bot.event
 async def on_ready():
